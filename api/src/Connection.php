@@ -2,8 +2,8 @@
 
 require_once 'Configuration.php';
 
-$conn = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
+$connection = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
 
-if ($conn->connect_errno) {
-    die('Can not connect to database: ' . $conn->connect_error);
+if ($connection->connect_errno) {
+    die('Can not connect to database: ' . $connection->connect_error);
 }
