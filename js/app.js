@@ -11,12 +11,14 @@ $(function() {
     function addNewBook () {
         var newTitle = $("#newTitle").val();
         var newAuthor = $("#newAuthor").val();
+        var newDesc = $("#newDesc").val();
         var settings = {
             "url": "api/books.php",
             "method": "POST",
             "data": {
                 "author": newAuthor,
-                "title": newTitle
+                "title": newTitle,
+                "description": newDesc
             }
         }
         $.ajax(settings).done(function (response) {
@@ -29,8 +31,10 @@ $(function() {
     function modifyBook (bookId) {
         var changedTitle = $("#changedTitle").val();
         var changedAuthor = $("#changedAuthor").val();
+        var changedDescription = $("#changedDescription").val();
         var settings = {
-            "url": "api/books.php?id=" + bookId + "&title=" + changedTitle + "&author=" + changedAuthor,
+            "url": "api/books.php?id=" + bookId + "&title=" + changedTitle + "&author=" + changedAuthor
+            + "&description=" + changedDescription,
             "method": "PUT"
         }
         $.ajax(settings).done(function (response) {
@@ -40,7 +44,7 @@ $(function() {
         });
     }
 
-    function getBook(bookId, authorLine)
+    function getBook(bookId, authorLine, descriptionLine)
     {
         var settings = {
             "url": "api/books.php?id=" + bookId,
@@ -48,6 +52,7 @@ $(function() {
         };
         $.ajax(settings).done(function (response) {
             authorLine.text(response.author);
+            descriptionLine.text(response.description)
         });
     }
 
@@ -79,18 +84,26 @@ $(function() {
                     // dodajemy tytuł, pustego autora, przyciski
                     var titleLine = "<div class='title' data-id='" + bookId + "'>" + bookTitle + "</div>";
                     var authorLine = "<div class='author' data-id='" + bookId + "'></div>";
+                    var descriptionLine = "<div class='description' data-id='" + bookId + "'></div>";
                     var showAuthorButton = "<button class='showAuthorBtn' data-id='" + bookId + "'>autor</button>";
                     var modifyButton = "<button class='modifyBtn' data-id='" + bookId + "'>zmień</button>";
                     var deleteButton = "<button class='deleteBtn' data-id='" + bookId + "'>usuń</button>";
-                    var newline = titleLine + authorLine + showAuthorButton + modifyButton + deleteButton;
+                    var newline = titleLine + authorLine  + descriptionLine + showAuthorButton + modifyButton + deleteButton;
                     allBooks.append(newline);
                     // eventy na poszczególnych elementach
                     $(".showAuthorBtn").on("click", function(event) {
                         event.stopImmediatePropagation();
                         var bookId = $(this).data("id");
                         var authorLine = $(this).prev();
-                        getBook(bookId, authorLine);
+                        var descriptionLine = $(this).prev();
+                        getBook(bookId, authorLine, descriptionLine);
                     });
+                    // $(".showDescBtn").on("click", function(event) {
+                    //     event.stopImmediatePropagation();
+                    //     var bookId = $(this).data("id");
+                    //     var descriptionLine = $(this).data("id");
+                    //     getBook(bookId, authorLine, descriptionLine);
+                    // });
                     $(".deleteBtn").on("click", function (event) {
                         event.stopImmediatePropagation();
                         var bookId = $(this).data("id");

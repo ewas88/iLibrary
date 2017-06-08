@@ -1,86 +1,108 @@
 <?php
 require_once "Connection.php";
+
 class Book
 {
     private $id;
     private $author;
     private $title;
+    private $description;
+
     public function __construct()
     {
         $this->id = -1;
         $this->author = "";
         $this->title = "";
     }
+
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    public function setDescription($description)
+    {
+        $this->description = $description;
+    }
+
     public function getId()
     {
         return $this->id;
     }
+
     public function getAuthor()
     {
         return $this->author;
     }
+
     public function getTitle()
     {
         return $this->title;
     }
+
     public function setId($id)
     {
         $this->id = $id;
     }
+
     public function setAuthor($author)
     {
         $this->author = $author;
     }
+
     public function setTitle($title)
     {
         $this->title = $title;
     }
-    static public function loadAllFromDB(mysqli $connection){
-        $sql = "SELECT * FROM `books`";
-        $stmt = $connection->prepare($sql);
-        $stmt->execute();
-        if ($stmt->num_rows === 0 ) {
-            return [];
-        } else {
-            $books = [];
-            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                $book = new Book();
-                $book->setId($row['id']);
-                $book->setTitle(($row['title']));
-                $book->setAuthor($row['author']);
-                $books[] = $book;
+
+    static public function allBooks(mysqli $connection)
+    {
+        $query = "SELECT * FROM `book`";
+        $ret = [];
+        $result = $connection->query($query);
+        if ($result == true) {
+            foreach ($result as $row) {
+                $loadedBook = new Book();
+                $loadedBook->id = $row['id'];
+                $loadedBook->author = $row['author'];
+                $loadedBook->title = $row['title'];
+                $loadedBook->description = $row['description'];
+
+                $ret[] = $loadedBook;
             }
-            return $books;
+        }
+        return $ret;
+    }
+
+    static public function load1Book(mysqli $connection, $id)
+    {
+        $query = "SELECT * FROM `book` WHERE id = '" . $id . "'";
+        $result = $connection->query($query);
+        if ($result == true && $result->num_rows == 1) {
+            $row = $result->fetch_assoc();
+            $loadedBook = new Book();
+            $loadedBook->id = $row['id'];
+            $loadedBook->author = $row['author'];
+            $loadedBook->title = $row['title'];
+            $loadedBook->description = $row['description'];
+            return $loadedBook;
+        } else {
+            return NULL;
         }
     }
-    static public function loadFromDB($connection, $id)
+
+    static public function create(mysqli $connection, $title, $author, $description)
     {
-        $sql = "SELECT * FROM books WHERE id = :id";
-        $stmt = $connection->prepare($sql);
-        $stmt->bindParam(":id", $id);
-        $stmt->execute();
-        if ($stmt->rowCount() == 0 ) {
-            return null;
+        $query = "INSERT INTO `book` (title, author, description) VALUES ('".$title."','".$author."','".$description."')";
+        $result = $connection->query($query);
+        if ($result == true) {
+            $id = $connection->lastInsertId();
+            return Book::load1Book($connection, $id);
         } else {
-            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                $book = new Book();
-                $book->setId($row['id']);
-                $book->setTitle(($row['title']));
-                $book->setAuthor($row['author']);
-            }
-            return $book;
+            return NULL;
         }
     }
-    static public function create($connection, $title, $author)
-    {
-        $sql = "INSERT INTO books (title, author) VALUES (:title, :author)";
-        $stmt = $connection->prepare($sql);
-        $stmt->bindParam(":title", $title);
-        $stmt->bindParam(":author", $author);
-        $stmt->execute();
-        $id = $connection->lastInsertId();
-        return Book::loadFromDB($connection, $id);
-    }
+
     static public function update($connection, $id, $title, $author)
     {
         $sql = "UPDATE books
@@ -97,6 +119,7 @@ class Book
             return false;
         }
     }
+
     static public function deleteFromDB($connection, $id)
     {
         $sql = "DELETE FROM books WHERE id = :id";
