@@ -2,43 +2,52 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Biblioteka</title>
+    <title>iLibrary</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="js/app.js"></script>
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 
-<body>
+<body class="w3-panel w3-yellow">
 
-<div class="message">
-    brak komunikatu
-</div><hr>
+<div class="w3-container w3-teal big-font">
+    <a style="font-size: 250%" href="index.html"><b>iLibrary</b></a>
+</div>
 
-<div>
-    <form>
-        <div>tytuł</div>
-        <input id="newTitle" name="newTitle" type="text">
-        <div>autor</div>
-        <input id="newAuthor" name="newAuthor" type="text">
-        <div>opis</div>
-        <input id="newDesc" name="newDesc" type="text">
-        <input id="addBtn" type="button" value="dodaj książkę">
-    </form>
-</div><hr>
+<div class="w3-panel" id="middle">
+    <div class="modify w3-panel w3-grey w3-round-xlarge" hidden>
+        <form>
+            <label><b>MODIFY THE BOOK</b></label>
+            <div>title</div>
+            <input id="changedTitle" name="changedTitle" type="text">
+            <div>author</div>
+            <input id="changedAuthor" name="changedAuthor" type="text">
+            <div>description</div>
+            <input id="changedDesc" name="changedDesc" type="text">
+            <br>
+            <input id="modifyButton" type="submit" value="update book">
+        </form>
+    </div>
 
-<div class="modify" hidden>
-    <form>
-        <div>tytuł</div>
-        <input id="changedTitle" name="changedTitle" type="text">
-        <div>autor</div>
-        <input id="changedAuthor" name="changedAuthor" type="text">
-        <input id="modifyBtn2" type="button" value="zmodyfikuj książkę">
-    </form>
-</div><hr>
+    <div id="right" class="w3-panel w3-grey w3-round-xlarge">
+        <form>
+            <label><b>ADD NEW BOOK</b></label>
+            <div>title</div>
+            <input id="newTitle" name="newTitle" type="text" required>
+            <div>author</div>
+            <input id="newAuthor" name="newAuthor" type="text" required>
+            <div>description</div>
+            <input id="newDesc" name="newDesc" type="text" required>
+            <br>
+            <input id="addBtn" type="submit" value="add">
+        </form>
+    </div>
 
-<button id="showBtn">pokaż/ukryj wszystkie książki</button>
-
-<div class="allBooks" hidden></div><hr>
-
-
+    <div id="left" class="w3-panel w3-grey w3-round-xlarge">
+        <label><b>LIST OF ALL AVAILABLE BOOKS</b></label>
+        <div class="allBooks"></div>
+    </div>
+</div>
 </body>
 </html>

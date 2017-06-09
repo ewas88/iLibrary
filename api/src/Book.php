@@ -13,6 +13,7 @@ class Book
         $this->id = -1;
         $this->author = "";
         $this->title = "";
+        $this->description = "";
     }
 
     public function getDescription()
@@ -91,9 +92,9 @@ class Book
         }
     }
 
-    static public function create(mysqli $connection, $title, $author, $description)
+    static public function newBook(mysqli $connection, $title, $author, $description)
     {
-        $query = "INSERT INTO `book` (title, author, description) VALUES ('".$title."','".$author."','".$description."')";
+        $query = "INSERT INTO `book` (title, author, description) VALUES ('" . $title . "','" . $author . "','" . $description . "')";
         $result = $connection->query($query);
         if ($result == true) {
             $id = $connection->lastInsertId();
@@ -103,33 +104,26 @@ class Book
         }
     }
 
-    static public function update($connection, $id, $title, $author)
+    static public function modifyBook(mysqli $connection, $id, $title, $author, $description)
     {
-        $sql = "UPDATE books
-                SET title = :title, author = :author
-                WHERE id = :id";
-        $stmt = $connection->prepare($sql);
-        $stmt->bindParam(":title", $title);
-        $stmt->bindParam(":author", $author);
-        $stmt->bindParam(":id", $id);
-        $stmt->execute();
-        if ($stmt->rowCount() == 1) {
+        $query = "UPDATE `book` SET title = '" . $title . "', author = '" . $author . "'
+        , description = '" . $description . "' WHERE id = '" . $id . "'";
+        $result = $connection->query($query);
+        if ($result == true) {
             return true;
         } else {
-            return false;
+            return NULL;
         }
     }
 
-    static public function deleteFromDB($connection, $id)
+    static public function deleteBook(mysqli $connection, $id)
     {
-        $sql = "DELETE FROM books WHERE id = :id";
-        $stmt = $connection->prepare($sql);
-        $stmt->bindParam(":id", $id);
-        $stmt->execute();
-        if ($stmt->rowCount() == 1) {
+        $query = "DELETE FROM `book` WHERE id = '" . $id . "'";
+        $result = $connection->query($query);
+        if ($result == true) {
             return true;
         } else {
-            return false;
+            return NULL;
         }
     }
 }
