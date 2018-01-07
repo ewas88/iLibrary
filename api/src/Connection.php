@@ -1,9 +1,31 @@
 <?php
+require 'Configuration.php';
 
-require_once 'Configuration.php';
+class Database
+{
+    private static $cont = null;
 
-$connection = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
+    public function __construct($dbName, $dbHost, $dbUsername, $dbUserPassword)
+    {
+        die('Init function is not allowed');
+    }
 
-if ($connection->connect_errno) {
-    die('Can not connect to database: ' . $connection->connect_error);
+    public static function connect($dbName, $dbHost, $dbUsername, $dbUserPassword)
+    {
+        if (null == self::$cont) {
+            try {
+                self::$cont = new PDO("mysql:host=" . $dbHost . ";" . "dbname=" . $dbName, $dbUsername, $dbUserPassword);
+            } catch (PDOException $e) {
+                die($e->getMessage());
+            }
+        }
+        return self::$cont;
+    }
+
+    public static function disconnect()
+    {
+        self::$cont = null;
+    }
 }
+
+?>
